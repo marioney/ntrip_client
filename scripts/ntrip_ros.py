@@ -5,10 +5,11 @@ import sys
 import json
 
 import rospy
-from std_msgs.msg import Header
-# from mavros_msgs.msg import RTCM
+
 from std_msgs.msg import String
 from nmea_msgs.msg import Sentence
+
+import serial
 
 from ntrip_client.ntrip_client import NTRIPClient
 
@@ -57,6 +58,13 @@ class NTRIPRos:
     self._rtcm_timer = None
     self._rtcm_pub = rospy.Publisher('rtcm', String, queue_size=10)
 
+    self._ser = serial.Serial()
+    self._ser.port = "/dev/ttyUSB0"
+    self._ser.baudrate = 115200
+    self._ser.timeout = 0.1
+
+    self._ser.open()
+
     # Initialize the client
     self._client = NTRIPClient(
       host=host,
@@ -70,7 +78,23 @@ class NTRIPRos:
       loginfo=rospy.loginfo,
       logdebug=rospy.logdebug
     )
+  
 
+  def write(self, msg):
+      try:
+          self._ser.write(msg)
+      except serial.SerialException as e:
+          self._mutex.release()
+          raise serial.SerialException(e)
+  def openPort(self):
+    self._ser.close()
+    try:
+        self._ser.open()
+    except serial.SerialException as e:
+        raise serial.SerialException(e)
+
+  def closePort(self):
+    self._ser.close()
   def run(self):
     # Setup a shutdown hook
     rospy.on_shutdown(self.stop)
@@ -109,6 +133,7 @@ class NTRIPRos:
         rtcm_data = rtcm_data + chr(i)
       rospy.logdebug('rtcm_data {}'.format(rtcm_data))
       self._rtcm_pub.publish(rtcm_data)
+      self.write(rtcm_data)
 
 
 if __name__ == '__main__':
