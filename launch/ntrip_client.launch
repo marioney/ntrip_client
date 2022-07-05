@@ -4,14 +4,14 @@
   <!-- Standalone example launch file for an ntrip client -->
 
   <!-- Declare arguments with default values -->
-  <arg name="host"                   default = "20.185.11.35" />
+  <arg name="host"                   default = "gnss1.tudelft.nl" />
   <arg name="port"                   default = "2101" />
-  <arg name="mountpoint"             default = "VTRI_RTCM3" />
+  <arg name="mountpoint"             default = "DELF00NLD0" />
   <arg name="authenticate"           default = "true" />
-  <arg name="username"               default = "user" />
-  <arg name="password"               default = "pass" />
+  <arg name="username"               default = "3me" />
+  <arg name="password"               default = "andras" />
   <arg name="ntrip_version"          default = "" />
-  <arg name="debug"                  default = "false" />
+  <arg name="debug"                  default = "true" />
 
   <!-- Set the log level to debug -->
   <env name="NTRIP_CLIENT_DEBUG" value="$(arg debug)" />

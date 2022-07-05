@@ -6,7 +6,8 @@ import json
 
 import rospy
 from std_msgs.msg import Header
-from mavros_msgs.msg import RTCM
+# from mavros_msgs.msg import RTCM
+from std_msgs.msg import String
 from nmea_msgs.msg import Sentence
 
 from ntrip_client.ntrip_client import NTRIPClient
@@ -54,7 +55,7 @@ class NTRIPRos:
 
     # Setup the RTCM publisher
     self._rtcm_timer = None
-    self._rtcm_pub = rospy.Publisher('rtcm', RTCM, queue_size=10)
+    self._rtcm_pub = rospy.Publisher('rtcm', String, queue_size=10)
 
     # Initialize the client
     self._client = NTRIPClient(
@@ -103,13 +104,11 @@ class NTRIPRos:
 
   def publish_rtcm(self, event):
     for raw_rtcm in self._client.recv_rtcm():
-      self._rtcm_pub.publish(RTCM(
-        header=Header(
-          stamp=rospy.Time.now(),
-          frame_id=self._rtcm_frame_id
-        ),
-        data=raw_rtcm
-      ))
+      rtcm_data = ""
+      for i in raw_rtcm:
+        rtcm_data = rtcm_data + chr(i)
+      rospy.logdebug('rtcm_data {}'.format(rtcm_data))
+      self._rtcm_pub.publish(rtcm_data)
 
 
 if __name__ == '__main__':
