@@ -11,7 +11,7 @@ from nmea_msgs.msg import Sentence
 
 import serial
 
-from ntrip_client.ntrip_client import NTRIPClient
+from ntrip_to_serial.ntrip_client import NTRIPClient
 
 
 class NTRIPRos:

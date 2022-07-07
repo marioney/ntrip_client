@@ -5,7 +5,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 
 # fetch values from package.xml
 setup_args = generate_distutils_setup(
-  packages=['ntrip_client'],
+  packages=['ntrip_to_serial'],
   package_dir={'': 'src'},
 )
 
